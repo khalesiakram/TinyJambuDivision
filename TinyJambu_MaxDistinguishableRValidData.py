@@ -1,17 +1,3 @@
-"""
-x_i_0_0, x_i_0_1,......,x_i_0_15
-x_i_1_0, x_i_1_1,......,x_i_1_15
-x_i_2_0, x_i_2_1,......,x_i_2_15
-x_i_3_0, x_i_3_1,......,x_i_3_15
-denote the input to the (i+1)-th round.
-
-x_i_0_0
-x_i_1_0
-x_i_2_0
-x_i_3_0
-denotes the first sbox of the input with x_0_3_0 the most significant bit.
-"""
-
 from gurobipy import *
 
 import time
