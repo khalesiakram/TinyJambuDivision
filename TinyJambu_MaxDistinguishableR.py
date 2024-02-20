@@ -246,7 +246,7 @@ class TinyJambu:
 		for i in range(0,self.Round):
 			variableIn = TinyJambu.CreateVariables(i,"x")#array of 128 binary variables corresponding to the internal state in the i_th update
 			variableOut = TinyJambu.CreateVariables(i+1,"x")#array of 128 binary variables corresponding to the internal state in the (i+1)_th update
-			variableBr = TinyJambu.CreateVariables(i,"br")
+			variableBr = TinyJambu.CreateVariables(i,"br")#variables used for modeling the copy operator
 			self.ConstraintsByCopy(variableIn[47],variableOut[46],variableBr[47])
 			self.ConstraintsByCopy(variableIn[70],variableOut[69],variableBr[70])
 			self.ConstraintsByCopy(variableIn[85],variableOut[84],variableBr[85])
@@ -281,9 +281,9 @@ class TinyJambu:
 					fileobj.write("x" + "_" + str(self.Round) + "_" +str(8*i+j) + " = 0\n")
 		fileobj.close()
 		for i in range(0,self.Round):
-			variableIn = TinyJambu.CreateVariables(i,"x")
-			variableOut = TinyJambu.CreateVariables(i+1,"x")
-			variableBr = TinyJambu.CreateVariables(i,"br")
+			variableIn = TinyJambu.CreateVariables(i,"x")#array of 128 binary variables corresponding to the internal state in the i_th update
+			variableOut = TinyJambu.CreateVariables(i+1,"x")#array of 128 binary variables corresponding to the internal state in the (i+1)_th update
+			variableBr = TinyJambu.CreateVariables(i,"br")#variables used for modeling the copy operator
 			self.ConstraintsByCopyv3(variableIn[47],variableOut[46],variableBr[47])
 			self.ConstraintsByCopyv3(variableIn[70],variableOut[69],variableBr[70])
 			self.ConstraintsByCopyv3(variableIn[85],variableOut[84],variableBr[85])
