@@ -185,17 +185,17 @@ class TinyJambu:
 		assert(self.Round >= 1)
 		fileobj = open(self.filename_model, "a")
 		fileobj.write("Subject To\n")
-
 		eqn = []
 		for i in range(0,16):
 			for j in range(0,8):
-				eqn.append("x" + "_0_" + str(8*i+j))
+				eqn.append("x" + "_0_" + str(8*i+j))	#corresponding to the 128 bits of the initial state
 		temp = " + ".join(eqn)
 		fileobj.write(temp)
 		fileobj.write(" <= ")
 		fileobj.write(str(self.objectiveBound))
 		fileobj.write("\n")
-				
+
+		#set the (target) active bit in the final state (output of round R):
 		for i in range(0,16):
 			for j in range(0,8):
 				if ((i == self.word) and (j == self.bit)):
@@ -204,9 +204,9 @@ class TinyJambu:
 					fileobj.write("x" + "_" + str(self.Round) + "_" +str(8*i+j) + " = 0\n")
 		fileobj.close()
 		for i in range(0,self.Round):
-			variableIn = TinyJambu.CreateVariables(i,"x")
-			variableOut = TinyJambu.CreateVariables(i+1,"x")
-			variableBr = TinyJambu.CreateVariables(i,"br")
+			variableIn = TinyJambu.CreateVariables(i,"x") #array of 128 binary variables corresponding to the internal state in the i_th update
+			variableOut = TinyJambu.CreateVariables(i+1,"x") #array of 128 binary variables corresponding to the internal state in the (i+1)_th update
+			variableBr = TinyJambu.CreateVariables(i,"br") #variables used for modeling the copy operator
 			self.ConstraintsByCopy(variableIn[47],variableOut[46],variableBr[47])
 			self.ConstraintsByCopy(variableIn[70],variableOut[69],variableBr[70])
 			self.ConstraintsByCopy(variableIn[85],variableOut[84],variableBr[85])
@@ -244,8 +244,8 @@ class TinyJambu:
 					fileobj.write("x" + "_" + str(self.Round) + "_" +str(8*i+j) + " = 0\n")
 		fileobj.close()
 		for i in range(0,self.Round):
-			variableIn = TinyJambu.CreateVariables(i,"x")
-			variableOut = TinyJambu.CreateVariables(i+1,"x")
+			variableIn = TinyJambu.CreateVariables(i,"x")#array of 128 binary variables corresponding to the internal state in the i_th update
+			variableOut = TinyJambu.CreateVariables(i+1,"x")#array of 128 binary variables corresponding to the internal state in the (i+1)_th update
 			variableBr = TinyJambu.CreateVariables(i,"br")
 			self.ConstraintsByCopy(variableIn[47],variableOut[46],variableBr[47])
 			self.ConstraintsByCopy(variableIn[70],variableOut[69],variableBr[70])
@@ -367,35 +367,9 @@ class TinyJambu:
 		fileobj.write("END")
 		fileobj.close()		
 
-	def Init(self,counterInput):
-		"""
-		Generate the constraints introduced by the initial division property.
-		"""
-		variableout = TinyJambu.CreateVariables(0,"x")
-		fileobj = open(self.filename_model, "a")
-		eqn = []
-		for i in range(0, counterInput):
-			temp = variableout[i] + " = 1"
-			fileobj.write(temp)
-			fileobj.write("\n")
-		for i in range(counterInput, counterInput+1):
-			temp = variableout[i] + " = 0"
-			fileobj.write(temp)
-			fileobj.write("\n")
-		for i in range(counterInput+1, 128):
-			temp = variableout[i] + " = 0"  #for ex search, should be one
-			fileobj.write(temp)
-			fileobj.write("\n")
-		fileobj.close()
-
-	#def MakeModel(self,counterInput,counterOut):
 	def MakeModel(self):
-		"""
-		Generate the MILP model of TinyJambu given the round number and activebits.
-		"""
 		self.CreateObjectiveFunction()
 		self.Constrain()
-		#self.Init()
 		self.VariableBinary()
 
 	def SolveModel(self):
